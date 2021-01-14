@@ -1,1 +1,3 @@
-deploys okd service to Aliyun ECS
+1.Aliyun CSI plugin
+2.Python Teams plugin
+
