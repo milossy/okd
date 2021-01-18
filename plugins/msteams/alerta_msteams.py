@@ -52,13 +52,17 @@ class SendConnectorCardMessage(PluginBase):
         return alert
 
     def post_receive(self, alert, **kwargs):
-        MS_TEAMS_WEBHOOK_URL = self.get_config('[MS_TEAMS_WEBHOOK_URL]', default='', type=str, **kwargs)
+        MS_TEAMS_WEBHOOK_URA = self.get_config('MS_TEAMS_WEBHOOK_URA', default='', type=str, **kwargs)
+        MS_TEAMS_WEBHOOK_URB = self.get_config('MS_TEAMS_WEBHOOK_URB', default='', type=str, **kwargs)
         MS_TEAMS_SUMMARY_FMT = self.get_config('MS_TEAMS_SUMMARY_FMT', default=None, type=str, **kwargs)  # Message summary(title) format
         MS_TEAMS_TEXT_FMT = self.get_config('MS_TEAMS_TEXT_FMT', default=None, type=str, **kwargs)  # Message text format
         MS_TEAMS_PAYLOAD = self.get_config('MS_TEAMS_PAYLOAD', default=None, type=str, **kwargs)  # json/Jinja2 MS teams messagecard payload
         MS_TEAMS_INBOUNDWEBHOOK_URL = self.get_config('MS_TEAMS_INBOUNDWEBHOOK_URL', default=None, type=str, **kwargs)  # webhook url for connectorcard actions
         MS_TEAMS_APIKEY = self.get_config('MS_TEAMS_APIKEY', default=None, type=str, **kwargs)  # X-API-Key (needs webhook.write permission)
-        MS_TEAMS_ENV = self.get_config('[MS_TEAMS_ENV]', default='', type=str, **kwargs)
+        MS_TEAMS_ENS = self.get_config('[MS_TEAMS_ENS]', default='', type=str, **kwargs)
+        MS_TEAMS_WEBHOOK_URL = {
+            "HSC": MS_TEAMS_WEBHOOK_URA, "HSDP": MS_TEAMS_WEBHOOK_URB}
+        MS_TEAMS_ENV = {"project": [MS_TEAMS_ENS]}
         DASHBOARD_URL = self.get_config('DASHBOARD_URL', default='', type=str, **kwargs)
 
         if alert.repeat:
