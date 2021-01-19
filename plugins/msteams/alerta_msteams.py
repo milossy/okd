@@ -134,13 +134,17 @@ class SendConnectorCardMessage(PluginBase):
                             LOG.debug('MS Teams response: %s / %s' % (r.status_code, r.text))
                             # Use requests.post to send raw json message card
             else:
-                # Use pymsteams to send card
-                msTeamsMessage = pymsteams.connectorcard(hookurl=MS_TEAMS_WEBHOOK_URL[i], http_timeout=MS_TEAMS_DEFAULT_TIMEOUT)
-                msTeamsMessage.title(summary)
-                msTeamsMessage.text(text)
-                msTeamsMessage.addLinkButton("Open in Alerta", url)
-                msTeamsMessage.color(color)
-                msTeamsMessage.send()
+                for i in MS_TEAMS_ENV['project']:
+                    MS_TEAMS_APP_ENV = alert.environment
+                    if i == MS_TEAMS_APP_ENV:
+                        if i in MS_TEAMS_WEBHOOK_URL:
+                            # Use pymsteams to send card
+                            msTeamsMessage = pymsteams.connectorcard(hookurl=MS_TEAMS_WEBHOOK_URL[i], http_timeout=MS_TEAMS_DEFAULT_TIMEOUT)
+                            msTeamsMessage.title(summary)
+                            msTeamsMessage.text(text)
+                            msTeamsMessage.addLinkButton("Open in Alerta", url)
+                            msTeamsMessage.color(color)
+                            msTeamsMessage.send()
         except Exception as e:
             raise RuntimeError("MS Teams: ERROR - %s", e)
 
