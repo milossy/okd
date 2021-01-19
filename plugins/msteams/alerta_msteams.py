@@ -1,4 +1,4 @@
-import json
+mport json
 import logging
 import os
 import requests
@@ -145,7 +145,7 @@ class SendConnectorCardMessage(PluginBase):
                 LOG.debug('MS Teams response: %s / %s' %
                           (r.status_code, r.text))
             else:
-                if murl[alert.environment] == alert.environment:
+                if murl["HSDP"] == alert.environment:
                     # Use pymsteams to send card
                     msTeamsMessage = pymsteams.connectorcard(
                         hookurl=murl[alert.environment], http_timeout=MS_TEAMS_DEFAULT_TIMEOUT)
