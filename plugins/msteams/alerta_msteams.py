@@ -54,14 +54,13 @@ class SendConnectorCardMessage(PluginBase):
     def post_receive(self, alert, **kwargs):
         MS_TEAMS_WEBHOOK_URA = self.get_config('MS_TEAMS_WEBHOOK_URA', default='', type=str, **kwargs)
         MS_TEAMS_WEBHOOK_URB = self.get_config('MS_TEAMS_WEBHOOK_URB', default='', type=str, **kwargs)
-        MS_TEAMS_WEBHOOK_URC = self.get_config('MS_TEAMS_WEBHOOK_URC', default='', type=str, **kwargs) 
-	MS_TEAMS_SUMMARY_FMT = self.get_config('MS_TEAMS_SUMMARY_FMT', default=None, type=str, **kwargs)  # Message summary(title) format
+        MS_TEAMS_SUMMARY_FMT = self.get_config('MS_TEAMS_SUMMARY_FMT', default=None, type=str, **kwargs)  # Message summary(title) format
         MS_TEAMS_TEXT_FMT = self.get_config('MS_TEAMS_TEXT_FMT', default=None, type=str, **kwargs)  # Message text format
         MS_TEAMS_PAYLOAD = self.get_config('MS_TEAMS_PAYLOAD', default=None, type=str, **kwargs)  # json/Jinja2 MS teams messagecard payload
         MS_TEAMS_INBOUNDWEBHOOK_URL = self.get_config('MS_TEAMS_INBOUNDWEBHOOK_URL', default=None, type=str, **kwargs)  # webhook url for connectorcard actions
         MS_TEAMS_APIKEY = self.get_config('MS_TEAMS_APIKEY', default=None, type=str, **kwargs)  # X-API-Key (needs webhook.write permission)
         MS_TEAMS_WEBHOOK_URL = {
-            "HSC": MS_TEAMS_WEBHOOK_URA, "HSDP": MS_TEAMS_WEBHOOK_URB, "D2C": MS_TEAMS_WEBHOOK_URC}
+            "HSC": MS_TEAMS_WEBHOOK_URA, "HSDP": MS_TEAMS_WEBHOOK_URB}
         MS_TEAMS_ENV = {"project": ["HSC","HSDP","D2C"]}
         DASHBOARD_URL = self.get_config('DASHBOARD_URL', default='', type=str, **kwargs)
 
@@ -127,12 +126,14 @@ class SendConnectorCardMessage(PluginBase):
 
         try:
             if MS_TEAMS_PAYLOAD:
+                MS_TEAMS_APP_ENV = alert.environment
                 for i in MS_TEAMS_ENV['project']:
-                    if i in MS_TEAMS_WEBHOOK_URL:
-                        LOG.debug("MS Teams sending(json payload) POST to %s", MS_TEAMS_WEBHOOK_URL[i])
-                        r = requests.post(MS_TEAMS_WEBHOOK_URL[i], data=card_json, timeout=MS_TEAMS_DEFAULT_TIMEOUT)
-                        LOG.debug('MS Teams response: %s / %s' % (r.status_code, r.text))
-                        # Use requests.post to send raw json message card
+                    if i == MS_TEAMS_APP_ENV:
+                        if i in MS_TEAMS_WEBHOOK_URL:
+                            LOG.debug("MS Teams sending(json payload) POST to %s", MS_TEAMS_WEBHOOK_URL[i])
+                            r = requests.post(MS_TEAMS_WEBHOOK_URL[i], data=card_json, timeout=MS_TEAMS_DEFAULT_TIMEOUT)
+                            LOG.debug('MS Teams response: %s / %s' % (r.status_code, r.text))
+                            # Use requests.post to send raw json message card
             else:
                 # Use pymsteams to send card
                 msTeamsMessage = pymsteams.connectorcard(hookurl=MS_TEAMS_WEBHOOK_URL[i], http_timeout=MS_TEAMS_DEFAULT_TIMEOUT)
