@@ -52,8 +52,8 @@ class SendConnectorCardMessage(PluginBase):
         return alert
 
     def post_receive(self, alert, **kwargs):
-        MS_TEAMS_WEBHOOK_URA = self.get_config('MS_TEAMS_WEBHOOK_URA', default='', type=str, **kwargs)
-        MS_TEAMS_WEBHOOK_URB = self.get_config('MS_TEAMS_WEBHOOK_URB', default='', type=str, **kwargs)
+        MS_TEAMS_WEBHOOK_URA = 'https://outlook.office.com/webhook/59a00b30-c056-4438-845e-9c4007a95f63@1a407a2d-7675-4d17-8692-b3ac285306e4/IncomingWebhook/ac0780568ec94f3597d14a0de00bafa9/db6f4acc-38c9-4f06-96fd-3f2c316ad018'
+        MS_TEAMS_WEBHOOK_URB = 'https://outlook.office.com/webhook/0e148a97-ac96-4527-8c90-acec2f3b6801@1a407a2d-7675-4d17-8692-b3ac285306e4/IncomingWebhook/3beecfb057d84ad182a0925a02e90b0e/db6f4acc-38c9-4f06-96fd-3f2c316ad018'
         MS_TEAMS_SUMMARY_FMT = self.get_config('MS_TEAMS_SUMMARY_FMT', default=None, type=str, **kwargs)  # Message summary(title) format
         MS_TEAMS_TEXT_FMT = self.get_config('MS_TEAMS_TEXT_FMT', default=None, type=str, **kwargs)  # Message text format
         MS_TEAMS_PAYLOAD = self.get_config('MS_TEAMS_PAYLOAD', default=None, type=str, **kwargs)  # json/Jinja2 MS teams messagecard payload
