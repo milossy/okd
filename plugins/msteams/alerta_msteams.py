@@ -150,7 +150,7 @@ class SendConnectorCardMessage(PluginBase):
                 if penv == "HSC":
                     # Use pymsteams to send card
                     msTeamsMessage = pymsteams.connectorcard(
-                        hookurl=MS_TEAMS_WEBHOOK_URL, http_timeout=MS_TEAMS_DEFAULT_TIMEOUT)
+                        hookurl=MS_TEAMS_WEBHOOK_HSDP, http_timeout=MS_TEAMS_DEFAULT_TIMEOUT)
                     msTeamsMessage.title(summary)
                     msTeamsMessage.text(text)
                     msTeamsMessage.addLinkButton("Open in Alerta", url)
