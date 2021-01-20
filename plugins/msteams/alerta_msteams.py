@@ -1,4 +1,4 @@
-import json
+iimport json
 import logging
 import os
 import requests
@@ -53,8 +53,8 @@ class SendConnectorCardMessage(PluginBase):
         return alert
 
     def post_receive(self, alert, **kwargs):
-        MS_TEAMS_WEBHOOK_URL = self.get_config(
-            'MS_TEAMS_WEBHOOK_URL', default='', type=str, **kwargs)
+        MS_TEAMS_WEBHOOK_UA = self.get_config(
+            'MS_TEAMS_WEBHOOK_UA', default='', type=str, **kwargs)
         MS_TEAMS_WEBHOOK_HSDP = self.get_config(
             'MS_TEAMS_WEBHOOK_HSDP', default='', type=str, **kwargs)
         MS_TEAMS_SUMMARY_FMT = self.get_config(
@@ -140,9 +140,9 @@ class SendConnectorCardMessage(PluginBase):
             if MS_TEAMS_PAYLOAD:
                 # Use requests.post to send raw json message card
                 LOG.debug("MS Teams sending(json payload) POST to %s",
-                          MS_TEAMS_WEBHOOK_URL)
+                          MS_TEAMS_WEBHOOK_UA)
                 r = requests.post(
-                    MS_TEAMS_WEBHOOK_URL, data=card_json, timeout=MS_TEAMS_DEFAULT_TIMEOUT)
+                    MS_TEAMS_WEBHOOK_UA, data=card_json, timeout=MS_TEAMS_DEFAULT_TIMEOUT)
                 LOG.debug('MS Teams response: %s / %s' %
                           (r.status_code, r.text))
             else:
@@ -150,7 +150,7 @@ class SendConnectorCardMessage(PluginBase):
                 if penv == "HSC":
                     # Use pymsteams to send card
                     msTeamsMessage = pymsteams.connectorcard(
-                        hookurl=MS_TEAMS_WEBHOOK_HSDP, http_timeout=MS_TEAMS_DEFAULT_TIMEOUT)
+                        hookurl=MS_TEAMS_WEBHOOK_UA, http_timeout=MS_TEAMS_DEFAULT_TIMEOUT)
                     msTeamsMessage.title(summary)
                     msTeamsMessage.text(text)
                     msTeamsMessage.addLinkButton("Open in Alerta", url)
