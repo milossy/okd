@@ -1,4 +1,4 @@
-iimport json
+import json
 import logging
 import os
 import requests
@@ -53,10 +53,12 @@ class SendConnectorCardMessage(PluginBase):
         return alert
 
     def post_receive(self, alert, **kwargs):
-        MS_TEAMS_WEBHOOK_UA = self.get_config(
-            'MS_TEAMS_WEBHOOK_UA', default='', type=str, **kwargs)
         MS_TEAMS_WEBHOOK_HSDP = self.get_config(
             'MS_TEAMS_WEBHOOK_HSDP', default='', type=str, **kwargs)
+        MS_TEAMS_WEBHOOK_UA = self.get_config(
+            'MS_TEAMS_WEBHOOK_UA', default='', type=str, **kwargs)
+        MS_TEAMS_WEBHOOK_URL = {
+            "HSC": MS_TEAMS_WEBHOOK_UA, "HSDP": MS_TEAMS_WEBHOOK_HSDP}
         MS_TEAMS_SUMMARY_FMT = self.get_config(
             'MS_TEAMS_SUMMARY_FMT', default=None, type=str, **kwargs)  # Message summary(title) format
         MS_TEAMS_TEXT_FMT = self.get_config(
@@ -77,8 +79,6 @@ class SendConnectorCardMessage(PluginBase):
 
         color = self._colors.get(alert.severity, MS_TEAMS_DEFAULT_COLOR)
         url = "%s/#/alert/%s" % (DASHBOARD_URL, alert.id)
-        murl = {"HSC": MS_TEAMS_WEBHOOK_URL, "HSDP": MS_TEAMS_WEBHOOK_HSDP}
-        
         template_vars = {
             'alert': alert,
             'config': app.config,
@@ -150,7 +150,7 @@ class SendConnectorCardMessage(PluginBase):
                 if penv == "HSC":
                     # Use pymsteams to send card
                     msTeamsMessage = pymsteams.connectorcard(
-                        hookurl=MS_TEAMS_WEBHOOK_UA, http_timeout=MS_TEAMS_DEFAULT_TIMEOUT)
+                        hookurl=MS_TEAMS_WEBHOOK_URL[penv], http_timeout=MS_TEAMS_DEFAULT_TIMEOUT)
                     msTeamsMessage.title(summary)
                     msTeamsMessage.text(text)
                     msTeamsMessage.addLinkButton("Open in Alerta", url)
@@ -158,7 +158,7 @@ class SendConnectorCardMessage(PluginBase):
                     msTeamsMessage.send()
                 else:
                     msTeamsMessage = pymsteams.connectorcard(
-                        hookurl=MS_TEAMS_WEBHOOK_HSDP, http_timeout=MS_TEAMS_DEFAULT_TIMEOUT)
+                        hookurl=MS_TEAMS_WEBHOOK_URL[penv], http_timeout=MS_TEAMS_DEFAULT_TIMEOUT)
                     msTeamsMessage.title(summary)
                     msTeamsMessage.text(text)
                     msTeamsMessage.addLinkButton("Open in Alerta", url)
