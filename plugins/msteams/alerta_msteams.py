@@ -53,7 +53,7 @@ class SendConnectorCardMessage(PluginBase):
         return alert
 
     def post_receive(self, alert, **kwargs):
-        MS_TEAMS_WEBHOOK_URL = {'MS_TEAMS_WEBHOOK_URL', default='', type=list, **kwargs}
+        MS_TEAMS_WEBHOOK_URL = self.get_config('MS_TEAMS_WEBHOOK_URL', default='', type=list, **kwargs)
         MS_TEAMS_SUMMARY_FMT = self.get_config(
             'MS_TEAMS_SUMMARY_FMT', default=None, type=str, **kwargs)  # Message summary(title) format
         MS_TEAMS_TEXT_FMT = self.get_config(
