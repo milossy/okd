@@ -135,25 +135,27 @@ class SendConnectorCardMessage(PluginBase):
             if MS_TEAMS_PAYLOAD:
                 # Use requests.post to send raw json message card
                 LOG.debug("MS Teams sending(json payload) POST to %s",
-                          MS_TEAMS_WEBHOOK_UA)
+                          MS_TEAMS_WEBHOOK_URL)
                 r = requests.post(
-                    MS_TEAMS_WEBHOOK_UA, data=card_json, timeout=MS_TEAMS_DEFAULT_TIMEOUT)
+                    MS_TEAMS_WEBHOOK_URL, data=card_json, timeout=MS_TEAMS_DEFAULT_TIMEOUT)
                 LOG.debug('MS Teams response: %s / %s' %
                           (r.status_code, r.text))
             else:
                 penv = alert.environment
+                URL = 'https://outlook.office.com/webhook/59a00b30-c056-4438-845e-9c4007a95f63@1a407a2d-7675-4d17-8692-b3ac285306e4/IncomingWebhook/ac0780568ec94f3597d14a0de00bafa9/db6f4acc-38c9-4f06-96fd-3f2c316ad018'
                 if penv == "HSC":
                     # Use pymsteams to send card
                     msTeamsMessage = pymsteams.connectorcard(
-                        hookurl=MS_TEAMS_WEBHOOK_URL[penv], http_timeout=MS_TEAMS_DEFAULT_TIMEOUT)
+                        hookurl=URL, http_timeout=MS_TEAMS_DEFAULT_TIMEOUT)
                     msTeamsMessage.title(summary)
                     msTeamsMessage.text(text)
                     msTeamsMessage.addLinkButton("Open in Alerta", url)
                     msTeamsMessage.color(color)
                     msTeamsMessage.send()
                 else:
+                    UR = 'https://outlook.office.com/webhook/0e148a97-ac96-4527-8c90-acec2f3b6801@1a407a2d-7675-4d17-8692-b3ac285306e4/IncomingWebhook/3beecfb057d84ad182a0925a02e90b0e/db6f4acc-38c9-4f06-96fd-3f2c316ad018'
                     msTeamsMessage = pymsteams.connectorcard(
-                        hookurl=MS_TEAMS_WEBHOOK_URL[penv], http_timeout=MS_TEAMS_DEFAULT_TIMEOUT)
+                        hookurl=UR, http_timeout=MS_TEAMS_DEFAULT_TIMEOUT)
                     msTeamsMessage.title(summary)
                     msTeamsMessage.text(text)
                     msTeamsMessage.addLinkButton("Open in Alerta", url)
