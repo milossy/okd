@@ -78,7 +78,7 @@ class SendConnectorCardMessage(PluginBase):
         color = self._colors.get(alert.severity, MS_TEAMS_DEFAULT_COLOR)
         url = "%s/#/alert/%s" % (DASHBOARD_URL, alert.id)
         murl = {"HSC": MS_TEAMS_WEBHOOK_URL, "HSDP": MS_TEAMS_WEBHOOK_HSDP}
-        penv = "%s" % (alert.environment)
+        
         template_vars = {
             'alert': alert,
             'config': app.config,
@@ -146,10 +146,19 @@ class SendConnectorCardMessage(PluginBase):
                 LOG.debug('MS Teams response: %s / %s' %
                           (r.status_code, r.text))
             else:
-                if penv in murl:
+                penv = alert.environment
+                if penv == "HSC":
                     # Use pymsteams to send card
                     msTeamsMessage = pymsteams.connectorcard(
-                        hookurl=murl[penv], http_timeout=MS_TEAMS_DEFAULT_TIMEOUT)
+                        hookurl=MS_TEAMS_WEBHOOK_URL, http_timeout=MS_TEAMS_DEFAULT_TIMEOUT)
+                    msTeamsMessage.title(summary)
+                    msTeamsMessage.text(text)
+                    msTeamsMessage.addLinkButton("Open in Alerta", url)
+                    msTeamsMessage.color(color)
+                    msTeamsMessage.send()
+                else:
+                    msTeamsMessage = pymsteams.connectorcard(
+                        hookurl=MS_TEAMS_WEBHOOK_HSDP, http_timeout=MS_TEAMS_DEFAULT_TIMEOUT)
                     msTeamsMessage.title(summary)
                     msTeamsMessage.text(text)
                     msTeamsMessage.addLinkButton("Open in Alerta", url)
