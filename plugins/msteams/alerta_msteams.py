@@ -146,7 +146,7 @@ class SendConnectorCardMessage(PluginBase):
                 LOG.debug('MS Teams response: %s / %s' %
                           (r.status_code, r.text))
             else:
-                if murl[penv] == alert.environment:
+                if penv in murl:
                     # Use pymsteams to send card
                     msTeamsMessage = pymsteams.connectorcard(
                         hookurl=murl[penv], http_timeout=MS_TEAMS_DEFAULT_TIMEOUT)
